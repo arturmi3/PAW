@@ -1,0 +1,38 @@
+<p *ngIf="!userIsLogged()" class="alert alert-warning text-center">
+  Zaloguj się!
+</p>
+
+<div *ngIf="userIsLogged()" class="container-fluid mx-5">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Tasks</th>
+        <th scope="col">Commands</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="userIsLogged()">
+      <tr *ngFor="let item of stories">
+        <th scope="row">{{ item.id }}</th>
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }}</td>
+        <!--
+        <td> <div *ngFor="let task in item.tasks">{{ task.name }} {{', '}}</div></td>
+        -->
+        <td> {{ item.tasks | joinTasks: ', ' }} </td>
+        
+        <td class="text-right">
+          <a class="btn btn-primary mx-1" [routerLink]="['/stories', 'view', item.id]" >Details</a>
+          <a class="btn btn-primary mx-1" [routerLink]="['/stories', 'edit', item.id]" >Edit</a>           
+          <button class="btn btn-danger mx-1" (click)="onDelete(item.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="container">
+    <a class="btn btn-primary mx-1" [routerLink]="['/stories', 'create']">Create new story</a>
+  </div>
+</div>

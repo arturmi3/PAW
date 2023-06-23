@@ -1,0 +1,10 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-warning">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Funkcje biznesowe</a>
+
+    <a *ngIf="!userIsLogged()" class="navbar-brand" href="/login">Log in</a>
+    <span *ngIf="userIsLogged()" class="navbar-brand">Hello {{currentUser()}}</span>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
