@@ -1,10 +1,13 @@
+import { Task } from './../models/task.model';
 import { Injectable } from '@angular/core';
 import {Observable, of} from 'rxjs';
 import { Story } from '../models/story.model';
-import { State } from '../models/tast-state.model';
+import { State } from '../models/task-state.model';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class StoriesService {
   private list: Story[] = []
   private nextId: number = 1
@@ -16,9 +19,17 @@ export class StoriesService {
   constructor() {
     console.log('StoriesService constructor')
 
-    this.create({ id: this.nextId, name: 'New order', description: 'description', tasks: [{id: 1, name: 'init', state: State.ToDo}, {id: 2, name: 'take order', state: State.ToDo}]  })
-    this.create({ id: this.nextId, name: 'Send pack', description: 'description', tasks: [{id: 1, name: 'completition', state: State.ToDo}, {id: 2, name: 'pack', state: State.ToDo}]  })
-    this.create({ id: this.nextId, name: 'Get payment', description: 'description', tasks: [{id: 1, name: 'payment module', state: State.ToDo}]  })
+    this.create({ id: this.nextId, name: 'First story', description: 'description', tasks: [
+      new Task(1, 'Zadanie 1', '', 3, State.ToDo, new Date(2023, 5, 1), new Date(2023, 6, 5), 'developer1', false),
+      new Task(2, 'Zadanie 2', '', 5, State.ToDo, new Date(2023, 5, 1), new Date(2023, 6, 5), 'developer2', false)
+    ]  })
+    this.create({ id: this.nextId, name: 'Second story', description: 'description', tasks: [
+      new Task(1, 'Zadanie 1', '', 3, State.ToDo, new Date(2023, 5, 1), new Date(2023, 6, 5), 'developer1', false),
+    ]  })
+    this.create({ id: this.nextId, name: 'Third story', description: 'description', tasks: [
+      new Task(1, 'Zadanie 1', '', 3, State.ToDo, new Date(2023, 5, 1), new Date(2023, 6, 5), 'developer1', false),
+      new Task(2, 'Zadanie 2', '', 4, State.ToDo, new Date(2023, 5, 1), new Date(2023, 6, 5), 'developer3', false)
+    ]  })
   }
 
   getall() : Story[] {
@@ -48,7 +59,7 @@ export class StoriesService {
   update(story: Story)
   {
     let x: Story | undefined = this.get(story.id)
-    if(x !== undefined) {      
+    if(x !== undefined) {
       x.name = story.name
       x.description = story.description
       x.tasks = story.tasks

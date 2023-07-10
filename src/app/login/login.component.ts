@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
       )
     ) {
         this.loginFailed = false;
-        this.router.navigate(['/']);
+        this.router.navigate(['']);
     } else {
         console.log('login failed')
         this.loginFailed = true

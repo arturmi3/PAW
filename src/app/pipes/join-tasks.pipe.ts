@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Task } from '../models/task.model';
-import { State } from '../models/tast-state.model';
+import { State } from '../models/task-state.model';
 
 @Pipe({
   name: 'joinTasks'

@@ -10,6 +10,7 @@
         <th scope="col">Name</th>
         <th scope="col">Description</th>
         <th scope="col">Tasks</th>
+        <th scope="col">Progress</th>
         <th scope="col">Commands</th>
       </tr>
     </thead>
@@ -23,6 +24,8 @@
         -->
         <td> {{ item.tasks | joinTasks: ', ' }} </td>
         
+        <td> {{ item.tasks | tasksProgress }} </td>
+
         <td class="text-right">
           <a class="btn btn-primary mx-1" [routerLink]="['/stories', 'view', item.id]" >Details</a>
           <a class="btn btn-primary mx-1" [routerLink]="['/stories', 'edit', item.id]" >Edit</a>           

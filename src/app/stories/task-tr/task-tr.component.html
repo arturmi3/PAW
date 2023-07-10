@@ -1,0 +1,88 @@
+<td>
+  <input name="id" class="form-control" type="number" placeholder="?" /> <!-- [(ngModel)]="name"  />  -->
+</td>
+<td>
+  <input
+    class="form-control"
+    [value]=""
+    placeholder="title"
+  />
+</td>
+<td>
+  <input
+    class="form-control"
+    formControlName="note"
+    placeholder="note"
+  />
+</td>
+<td>
+  <input
+    class="form-control"
+    formControlName="workLimit"
+    type="number"
+    placeholder="date"
+  />
+</td>
+<td>
+  <select title="state" class="form-control" formControlName="state">
+    <option disabled selected hidden value="null">
+      Select state
+    </option>
+    <option id="state-list" *ngFor="let m of taskStates" [value]="m">
+      {{ m }}
+    </option>
+  </select>
+</td>
+<td>
+  <input
+    class="form-control"
+    formControlName="created"
+    type="date"
+    placeholder="?"
+  />
+</td>
+<td>
+  <input
+    class="form-control"
+    formControlName="started"
+    type="date"
+    placeholder="?"
+  />
+</td>
+<td>
+  <input
+    formControlName="target"
+    class="form-control"
+    type="date"
+    placeholder="?"
+  />
+</td>
+<td>
+  <input
+    formControlName="ended"
+    class="form-control"
+    type="date"
+    placeholder="?"
+  />
+</td>
+<td>
+  <input
+    class="form-control"
+    type="checkbox"
+    formControlName="rejected"
+    placeholder="?"
+  />
+</td>
+<td>
+  <input
+    class="form-control"
+    formControlName="ownedBy"
+    placeholder="?"
+  />
+</td>
+
+<td *ngIf="action != 1">
+  <button class="btn btn-danger" (click)="deleteTask(task.id)">
+    Delete
+  </button>
+</td>

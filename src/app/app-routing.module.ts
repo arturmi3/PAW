@@ -5,14 +5,16 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './stories/home/home.component';
 import { StoryComponent } from './stories/story/story.component';
 import { StoryDetailsComponent } from './stories/story-details/story-details.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 const routes: Routes = [
   {
     path: 'login', component: LoginComponent
   },
   { path: 'stories/:action/:id', component: StoryDetailsComponent},
-  { path: 'stories/:action/:id', component: StoryDetailsComponent},
   { path: 'stories/:action', component: StoryDetailsComponent},
+  { path: 'tasks', component: TasksComponent},
+  { path: 'home', component: HomeComponent},
   {
     path: '', component: HomeComponent
   },

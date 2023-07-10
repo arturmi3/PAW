@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './stories/home/home.component';
@@ -13,6 +12,9 @@ import { StoryDetailsComponent } from './stories/story-details/story-details.com
 import { StoriesService } from './services/stories.service';
 import { AuthService } from './services/auth.service';
 import { JoinTasksPipe } from './pipes/join-tasks.pipe';
+import { TasksProgressPipe } from './pipes/tasks-progress.pipe';
+import { TasksComponent } from './tasks/tasks.component';
+//import { TaskTrComponent } from './stories/task-tr';
 
 
 
@@ -26,7 +28,10 @@ import { JoinTasksPipe } from './pipes/join-tasks.pipe';
     StoryComponent,
     StoryDetailsComponent,
     JoinTasksPipe,
-    
+    TasksProgressPipe,
+    TasksComponent,
+//    TaskTrComponent,
+
   ],
   imports: [
     BrowserModule,

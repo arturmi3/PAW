@@ -27,3 +27,20 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 
+
+
+
+#MVP (zaliczenie na 3.0) 
+1. Jeden domyślny użytkownik, bez logowania. Jan Niezbędny albo inny John Doe. 
+2. Jeden domyślny projekt 
+3. Funkcjonalności biznesowe - prosty CRUD + lista (bez filtrów, sortowania itd.) + powiązanie 
+funkcjonalność<->zadanie (czyli klikają na szczegóły funkcjonalności chcemy widzieć zadania 
+przypisane do realizowanej funkcjonalności) 
+4. Zadania — prosty CRUD + kanban (todo/doing/done) + powiązanie zadanie<->funkcjonalność 
+(czyli klikając na szczegóły zadania chcę widzieć do jakiej funkcjonalności przypisane jest 
+zadanie). Zmiana statusu zadania powiązanego z funkcjonalnością powinno adekwatnie 
+zmienić stan funkcjonalności. 
+Modele zadania i funkcjonalności obcinamy zgodnie ze specyfikacją MVP
+
+
+

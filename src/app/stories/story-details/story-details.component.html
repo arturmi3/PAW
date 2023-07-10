@@ -1,24 +1,173 @@
 <div class="container mx-5">
-<form [formGroup]="storyForm" (ngSubmit)="save()">
+  <form [formGroup]="storyForm" (ngSubmit)="save()">
     <div class="form-group mt-3">
-        <label for="id">identyfikator</label>
-        <input type="number" name="id" class="form-control" formControlName="id" placeholder="id" readonly/>
-    </div>  
-    <div class="form-group mt-3">
-        <label for="name">funkcja biznesowa</label>
-        <input type="text" name="name" class="form-control" formControlName="name" placeholder="name" [readOnly]="action==1"/>
+      <label for="id">Id</label>
+      <input
+        type="number"
+        name="id"
+        class="form-control col-xs-2"
+        formControlName="id"
+        placeholder="id"
+        readonly
+      />
     </div>
     <div class="form-group mt-3">
-        <label for="description">opis</label>
-        <input type="text" name="description" class="form-control h-100" formControlName="description" placeholder="description" [readOnly]="action==1"/>
+      <label for="name">Business function</label>
+      <input
+        type="text"
+        name="name"
+        class="form-control col-xs-3"
+        formControlName="name"
+        placeholder="name"
+        [readOnly]="action == 1"
+      />
+    </div>
+    <div class="form-group mt-3">
+      <label for="description">Description</label>
+      <input
+        type="text"
+        name="description"
+        class="form-control col-xs-4"
+        formControlName="description"
+        placeholder="description"
+        [readOnly]="action == 1"
+      />
     </div>
 
+    <h3 class="mt-3">Tasks</h3>
+    <div class="form-group m-3">
+      <button *ngIf="action != 1" type="button" class="btn btn-info" (click)="addNewTask()">
+        Add task
+      </button>
+    </div>
+
+    <ng-container formArrayName="tasks">
+      <table class="table-bordered" *ngIf="tasksArray.value.length">
+        <tr>
+          <th>Id*</th>
+          <th>Title*</th>
+          <th>Note</th>
+          <th>Work limit (h)*</th>
+          <th>State* (0=todo,1=doing,2=done)</th>
+          <th>Created</th>
+          <th hidden>Started</th>
+          <th>Target date*</th>
+          <th hidden>Ended</th>
+          <th>Rejected*</th>
+          <th>OwnedBy</th>
+          <th *ngIf="action != 1">Delete</th>
+        </tr>
+        <tr
+          *ngFor="let x of tasksArray.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <td>
+            <input class="form-control" formControlName="id" placeholder="id" />
+          </td>
+          <td>
+            <input
+              class="form-control"
+              formControlName="name"
+              placeholder="title"
+            />
+          </td>
+          <td>
+            <input
+              class="form-control"
+              formControlName="note"
+              placeholder="note"
+            />
+          </td>
+          <td>
+            <input
+              class="form-control"
+              formControlName="workLimit"
+              type="number"
+              placeholder="date"
+              min="1" max="100"
+            />
+          </td>
+          <td>
+            <select title="state" class="form-control" formControlName="state">
+              <option disabled selected hidden value="null">
+                Select state
+              </option>
+              <option id="state-list" *ngFor="let m of taskStates" [value]="m">
+                {{ m }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input
+              class="form-control"
+              formControlName="created"
+              type="date"
+              placeholder="?"
+            />
+          </td>
+          <td hidden>
+            <input
+              class="form-control"
+              formControlName="started"
+              type="date"
+              placeholder="?"              
+            />
+          </td>
+          <td>
+            <input
+              formControlName="target"
+              class="form-control"
+              type="date"
+              placeholder="?"
+            />
+          </td>
+          <td hidden>
+            <input
+              formControlName="ended"
+              class="form-control"
+              type="date"
+              placeholder="?"              
+            />
+          </td>
+          <td>
+            <input
+              class="form-control"
+              type="checkbox"
+              formControlName="rejected"              
+              placeholder="x"                            
+            />
+          </td>
+          <td>
+            <input
+              class="form-control"
+              formControlName="ownedBy"
+              placeholder="?"
+            />
+          </td>
+
+          <td *ngIf="action != 1">
+            <button class="btn btn-danger" type="button" (click)="deleteTask(i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </table>
+    </ng-container>
+
     <div class="form-group mt-3">
-        <button *ngIf="action==0 || action==2" class="btn btn-primary" type="submit">Save</button>
-        <button *ngIf="action==1" class="btn btn-primary" type="submit">Close</button>
-        <!--
+      <button
+        *ngIf="action == 0 || action == 2"
+        class="btn btn-primary"
+        type="submit"
+      >
+        Save story
+      </button>
+      <button *ngIf="action == 1" class="btn btn-primary" type="submit">
+        Close
+      </button>
+      <!--
         <button class="btn btn-primary" type="secondary" (click)="cancel()">Cancel</button>
         -->
-     </div>
-</form>
+    </div>
+  </form>
 </div>

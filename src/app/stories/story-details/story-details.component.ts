@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Story } from 'src/app/models/story.model';
+import { Task } from 'src/app/models/task.model';
+import { State } from 'src/app/models/task-state.model';
 import { StoriesService } from 'src/app/services/stories.service';
 
 enum Action { create, view, edit, delete }
@@ -22,14 +24,37 @@ type StoryForm = {
 export class StoryDetailsComponent implements OnInit {
   action: Action = Action.create
 
+  private story?: Story
+
   protected storyForm!: FormGroup<StoryForm>
   
+  taskStates = [State.ToDo, State.Doing, State.Done]
   constructor(
     private route: ActivatedRoute,
     private router: Router, 
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private storiesSvr: StoriesService) {}
   
+  get tasksArray() {
+    return this.storyForm.controls["tasks"] as FormArray;
+  }
+
+  createItem(item: Task) {
+    return this.fb.group({
+      id: [item.id, [Validators.required]],
+      name: [item.name, [Validators.required, Validators.minLength(3)]],
+      note: [item.note, [Validators.maxLength(2000)]],
+      workLimit: [item.workLimit, [Validators.min(0.25), Validators.max(1000)]],
+      state: [item.state, [Validators.required]],      
+      created: [item.created.toISOString().split("T")[0], [Validators.required]],
+      started: [item.started?.toISOString().split("T")[0]],
+      target: [item.target?.toISOString().split("T")[0], [Validators.required]],
+      ended: [item.ended?.toISOString().split("T")[0]],
+      rejected: [item.rejected, [Validators.required]],
+      ownedBy: [item.ownedBy],
+    });
+  }
+
   ngOnInit(): void {
     let s: any
 
@@ -42,45 +67,50 @@ export class StoryDetailsComponent implements OnInit {
 
       switch(this.action) {
         case Action.create:            
-            this.storyForm = this.formBuilder.nonNullable.group({
-              id: [this.storiesSvr.getNextId(), Validators.required],
-              name: ['', Validators.required],
-              description: [''],
-              tasks: this.formBuilder.array([])
+            this.story = new Story(this.storiesSvr.getNextId(), '', '', [])
+
+            this.storyForm = this.fb.nonNullable.group({
+              id: [this.story.id, Validators.required],
+              name: [this.story.name, Validators.required],
+              description: [this.story.description],
+              tasks: this.fb.array([])
             });
                     break;
           case Action.edit:
             s = this.storiesSvr.get(params['id']);
             if (s === undefined) this.router.navigate(['/not-found']);
             else {
-              console.log(`edit, id= ${(s as Story).id}`)
-              this.storyForm = this.formBuilder.nonNullable.group({
-                id: [(s as Story).id, Validators.required],
-                name: [(s as Story).name, Validators.required],
-                description: [(s as Story).description],
-                tasks: this.formBuilder.array((s as Story).tasks)
+              this.story = s as Story
+
+              console.log(`edit, id= ${this.story.id}`)
+              this.storyForm = this.fb.nonNullable.group({
+                id: [this.story.id, Validators.required],
+                name: [this.story.name, Validators.required],
+                description: [this.story.description],
+                tasks: this.fb.array(this.story.tasks.map((item: Task) => this.createItem(item)))
               });
 
-              //this.storyForm.value.id = (s as Story).id
-              //this.storyForm.value.name = (s as Story).name
-              //this.storyForm.value.description = (s as Story).description
+              //this.storyForm.value.id = story.id
+              //this.storyForm.value.name = story.name
+              //this.storyForm.value.description = story.description
             }
             break;
           case Action.view:
             s = this.storiesSvr.get(params['id']);
             if (s === undefined) this.router.navigate(['/not-found']);
             else {
-              console.log(`view, id= ${(s as Story).id}`)
-              this.storyForm = this.formBuilder.nonNullable.group({
-                id: [(s as Story).id, Validators.required],
-                name: [(s as Story).name, Validators.required],
-                description: [(s as Story).description],
-                tasks: this.formBuilder.array((s as Story).tasks)
+              this.story = s as Story
+              console.log(`view, id= ${this.story.id}`)
+              this.storyForm = this.fb.nonNullable.group({
+                id: [this.story.id, Validators.required],
+                name: [this.story.name, Validators.required],
+                description: [this.story.description],
+                tasks: this.fb.array(this.story.tasks.map((item: Task) => this.createItem(item)))
               });
 
-              //this.storyForm.value.id = (s as Story).id
-              //this.storyForm.value.name = (s as Story).name
-              //this.storyForm.value.description = (s as Story).description
+              //this.storyForm.value.id = story.id
+              //this.storyForm.value.name = story.name
+              //this.storyForm.value.description = story.description
             }
             break;
       }
@@ -88,14 +118,33 @@ export class StoryDetailsComponent implements OnInit {
     });
   }
 
+  addNewTask() : void
+  {
+    let last_id: number = 0
+    this.tasksArray.value.forEach((e: any) => { last_id = (e.id > last_id) ? e.id : last_id })
+    
+    let item = new Task(last_id + 1, '', '', 1, State.ToDo, new Date(), undefined, '', false)
+    this.tasksArray.push(this.createItem(item))
+  }
+
+  deleteTask(index: number) : void {
+    this.tasksArray.removeAt(index)
+  }
+
   save(): void { 
+    let _tasks: Task[] = []
+
     switch(this.action)
     {
       case Action.create:
-        this.storiesSvr.create({ id: this.storyForm.value.id!, name: this.storyForm.value.name!, description: this.storyForm.value.description ?? '', tasks: [] })
+        if (!this.storyForm.valid) { alert("Uzupełnij dane!"); return;}
+        _tasks = this.storyForm.value.tasks.map((t:any) => new Task(t.id, t.name, t.note, Number.parseFloat(t.workLimit), Number.parseInt(t.state), new Date(t.created), new Date(t.target), t.ownedBy, t.rejected))
+        this.storiesSvr.create({ id: this.storyForm.value.id!, name: this.storyForm.value.name!, description: this.storyForm.value.description ?? '', tasks: _tasks })
         break
       case Action.edit:
-        this.storiesSvr.update({ id: this.storyForm.value.id!, name: this.storyForm.value.name!, description: this.storyForm.value.description ?? '', tasks: [] })
+        if (!this.storyForm.valid) { alert("Uzupełnij dane!"); return;}
+        _tasks = this.storyForm.value.tasks.map((t:any) => new Task(t.id, t.name, t.note, Number.parseFloat(t.workLimit), Number.parseInt(t.state), new Date(t.created), new Date(t.target), t.ownedBy, t.rejected))
+        this.storiesSvr.update({ id: this.storyForm.value.id!, name: this.storyForm.value.name!, description: this.storyForm.value.description ?? '', tasks: _tasks })
         break
     }
     this.router.navigate(['']) 
